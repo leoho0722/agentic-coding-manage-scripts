@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# 設定檔（含個人資訊）
+configs/
+
+# 共用 Skills（透過 symlink 分發）
+skills/
+
+# 本地文件
+Swift-CodingGuideline.md
