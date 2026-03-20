@@ -39,6 +39,7 @@ show_menu() {
   echo -e "  ${CYAN}2)${NC} Skills         — 共用 skills 目錄 symlink"
   echo -e "  ${CYAN}3)${NC} All Symlinks   — 全部 symlink（Configs + Skills）"
   echo -e "  ${CYAN}4)${NC} Xcode Agents   — 更新 Xcode 內建的 Claude / Codex SDK"
+  echo -e "  ${CYAN}5)${NC} Flutter Skills — 安裝／更新 Flutter skills（from github.com/flutter/skills）"
   echo -e "  ${CYAN}q)${NC} 離開"
   echo ""
 }
@@ -71,10 +72,19 @@ run_xcode_agents() {
   bash "$script"
 }
 
+run_flutter_skills() {
+  local script="${SCRIPTS_DIR}/update-flutter-skills.sh"
+  if [[ ! -f "$script" ]]; then
+    echo -e "${RED}[ERROR]${NC} 找不到：${script}"
+    return 1
+  fi
+  bash "$script"
+}
+
 # ── 主邏輯 ──
 show_menu
 
-read -rp "請選擇操作 [1/2/3/4/q]: " choice
+read -rp "請選擇操作 [1/2/3/4/5/q]: " choice
 
 case "$choice" in
   1)
@@ -89,6 +99,9 @@ case "$choice" in
     ;;
   4)
     run_xcode_agents
+    ;;
+  5)
+    run_flutter_skills
     ;;
   q|Q)
     echo ""
