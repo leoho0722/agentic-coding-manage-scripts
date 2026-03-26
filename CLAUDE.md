@@ -64,3 +64,17 @@ bash scripts/update-xcode-agents.sh
 - **腳本檔頭**：包含用途說明、支援工具清單、用法範例
 - **備份機制**：建立 symlink 前，若目標已存在會自動備份為 `*.backup.<timestamp>`
 - **顏色輸出**：使用統一的 `info()` / `success()` / `warn()` / `error()` 函式
+
+## Commit 風格
+
+使用正體中文撰寫 conventional commits，description（body）使用列點格式，例如：
+
+- `feat(s010): 實作 ApiService（AWS Amplify SDK + 非同步任務模式）`
+- `fix: 修正下載進度對話框在 build 期間觸發 setState`
+
+```
+refactor(settings-view): 設定頁面 Cupertino → Material 3 重構
+
+- 移除所有 Cupertino 元件
+- 統一採用 Material 3 Card.filled + ListTile 呈現
+```

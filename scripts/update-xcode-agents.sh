@@ -24,7 +24,7 @@ set -euo pipefail
 XCODE_VERSIONS_DIR="${HOME}/Library/Developer/Xcode/CodingAssistant/Agents/Versions"
 
 CLAUDE_GCS_BASE="https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases"
-CODEX_GITHUB_API="https://api.github.com/repos/openai/codex/releases/latest"
+CODEX_RELEASES_URL="https://github.com/openai/codex/releases/latest"
 
 # 平台偵測
 detect_platform() {
@@ -231,18 +231,19 @@ update_codex() {
   done
   echo ""
 
-  # 從 GitHub Releases API 取得最新版本
+  # 從 GitHub Releases 頁面的重導向取得最新版本 tag
   info "正在查詢 GitHub 最新版本..."
-  local release_json
-  release_json=$(curl -sfS "$CODEX_GITHUB_API" 2>/dev/null || echo "")
+  local redirect_url
+  redirect_url=$(curl -sfSI -o /dev/null -w '%{redirect_url}' "$CODEX_RELEASES_URL" 2>/dev/null || echo "")
 
-  if [[ -z "$release_json" ]]; then
+  if [[ -z "$redirect_url" ]]; then
     error "無法取得 GitHub Release 資訊，請檢查網路連線。"
     return 1
   fi
 
+  # 重導向 URL 格式：https://github.com/openai/codex/releases/tag/<tag>
   local latest_tag
-  latest_tag=$(echo "$release_json" | grep '"tag_name"' | head -1 | sed 's/.*: *"//;s/".*//')
+  latest_tag="${redirect_url##*/}"
 
   if [[ -z "$latest_tag" ]]; then
     error "無法解析版本號。"
@@ -259,13 +260,8 @@ update_codex() {
     *)     error "不支援的架構：${ARCH}"; return 1 ;;
   esac
 
-  # 從 release JSON 找到 asset 下載 URL
-  local download_url
-  download_url=$(echo "$release_json" \
-    | grep "browser_download_url" \
-    | grep "$asset_name" \
-    | head -1 \
-    | sed 's/.*: *"//;s/".*//')
+  # 直接組裝 asset 下載 URL
+  local download_url="https://github.com/openai/codex/releases/download/${latest_tag}/${asset_name}"
 
   if [[ -z "$download_url" ]]; then
     error "找不到 ${asset_name} 下載連結。"
