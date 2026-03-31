@@ -6,12 +6,14 @@
 # 並透過 symlink 連結回原始路徑。
 #
 # 支援的工具：
-#   - Claude Code          (~/.claude/)
-#   - OpenCode              (~/.config/opencode/)
-#   - Google Antigravity    (~/.gemini/antigravity/)
-#   - OpenAI Codex          (~/.codex/)
-#   - Xcode (Claude Agent)  (~/Library/Developer/Xcode/CodingAssistant/ClaudeAgentConfig/)
-#   - Xcode (Codex)         (~/Library/Developer/Xcode/CodingAssistant/codex/)
+#   - Claude Code                    (~/.claude/)
+#   - OpenCode                        (~/.config/opencode/)
+#   - Google Antigravity              (~/.gemini/antigravity/)
+#   - OpenAI Codex                    (~/.codex/)
+#   - Xcode (Claude Agent, 26.3)     (~/Library/Developer/Xcode/CodingAssistant/ClaudeAgentConfig/)
+#   - Xcode (Claude Agent, 26.4+)    (~/Library/Developer/Xcode/CodingAssistant/Agents/claude/)
+#   - Xcode (Codex, 26.3)            (~/Library/Developer/Xcode/CodingAssistant/codex/)
+#   - Xcode (Codex, 26.4+)           (~/Library/Developer/Xcode/CodingAssistant/Agents/codex/)
 #
 
 set -euo pipefail
@@ -48,11 +50,17 @@ CONFIG_MAP=(
   # OpenAI Codex
   "openai-codex/config.toml|${HOME}/.codex/config.toml"
 
-  # Xcode (Claude Agent)
+  # Xcode (Claude Agent, 26.3)
   "xcode-claude/.claude.json|${HOME}/Library/Developer/Xcode/CodingAssistant/ClaudeAgentConfig/.claude.json"
 
-  # Xcode (Codex)
+  # Xcode (Codex, 26.3)
   "xcode-codex/config.toml|${HOME}/Library/Developer/Xcode/CodingAssistant/codex/config.toml"
+
+  # Xcode 26.4+（Claude Agent — 新路徑）
+  "xcode-claude/.claude.json|${HOME}/Library/Developer/Xcode/CodingAssistant/Agents/claude/.claude.json"
+
+  # Xcode 26.4+（Codex — 新路徑）
+  "xcode-codex/config.toml|${HOME}/Library/Developer/Xcode/CodingAssistant/Agents/codex/config.toml"
 
   # ── 新增工具範例 ──
   # "tool-name/config.json|${HOME}/.tool-name/config.json"

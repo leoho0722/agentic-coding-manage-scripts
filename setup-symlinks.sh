@@ -69,7 +69,7 @@ run_xcode_agents() {
     echo -e "${RED}[ERROR]${NC} 找不到：${script}"
     return 1
   fi
-  bash "$script"
+  bash "$script" "$@"
 }
 
 run_flutter_skills() {
@@ -98,7 +98,7 @@ case "$choice" in
     run_skills
     ;;
   4)
-    run_xcode_agents
+    run_xcode_agents "$@"
     ;;
   5)
     run_flutter_skills

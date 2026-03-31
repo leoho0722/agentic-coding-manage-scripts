@@ -6,12 +6,14 @@
 # global skills 路徑，讓所有工具共享同一套 skills。
 #
 # 支援的工具：
-#   - Claude Code          (~/.claude/skills/)
-#   - OpenCode              (~/.config/opencode/skills/)
-#   - Google Antigravity    (~/.gemini/antigravity/skills/)
-#   - OpenAI Codex          (~/.codex/skills/)
-#   - Xcode (Claude Agent)  (~/Library/Developer/Xcode/CodingAssistant/ClaudeAgentConfig/skills/)
-#   - Xcode (Codex)         (~/Library/Developer/Xcode/CodingAssistant/codex/skills/)
+#   - Claude Code                    (~/.claude/skills/)
+#   - OpenCode                        (~/.config/opencode/skills/)
+#   - Google Antigravity              (~/.gemini/antigravity/skills/)
+#   - OpenAI Codex                    (~/.codex/skills/)
+#   - Xcode (Claude Agent, 26.3)     (~/Library/Developer/Xcode/CodingAssistant/ClaudeAgentConfig/skills/)
+#   - Xcode (Claude Agent, 26.4+)    (~/Library/Developer/Xcode/CodingAssistant/Agents/claude/skills/)
+#   - Xcode (Codex, 26.3)            (~/Library/Developer/Xcode/CodingAssistant/codex/skills/)
+#   - Xcode (Codex, 26.4+)           (~/Library/Developer/Xcode/CodingAssistant/Agents/codex/skills/)
 #
 
 set -euo pipefail
@@ -39,6 +41,9 @@ SKILLS_MAP=(
   "${HOME}/.codex/skills"
   "${HOME}/Library/Developer/Xcode/CodingAssistant/ClaudeAgentConfig/skills"
   "${HOME}/Library/Developer/Xcode/CodingAssistant/codex/skills"
+  # Xcode 26.4+（新路徑）
+  "${HOME}/Library/Developer/Xcode/CodingAssistant/Agents/claude/skills"
+  "${HOME}/Library/Developer/Xcode/CodingAssistant/Agents/codex/skills"
 )
 
 # ── 建立 symlink 的共用函式 ──
