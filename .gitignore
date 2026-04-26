@@ -7,6 +7,9 @@ configs/
 # 共用 Skills（透過 symlink 分發）
 skills/
 
+# MCP servers 實際設定（含 secrets，僅 mcp/servers.example.json 入版控）
+mcp/servers.json
+
 # Flutter Skills 快取（由 update-flutter-skills.sh 管理）
 .flutter-skills-repo/
 

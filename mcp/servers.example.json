@@ -1,0 +1,98 @@
+{
+    "_comment": "MCP servers 統一設定範例。複製為 servers.json 後執行 scripts/sync-mcp-servers.sh 同步到各工具。",
+    "_targets": [
+        "claude-code",
+        "xcode-claude",
+        "opencode",
+        "google-antigravity",
+        "openai-codex",
+        "xcode-codex"
+    ],
+    "_notes": {
+        "transport": "stdio | http",
+        "http_unsupported_targets": "openai-codex 與 xcode-codex 不支援 http，會自動跳過並 warn",
+        "targets": "未列入 targets 的工具會從該工具設定中移除（保證 sync 後狀態 = 來源狀態）"
+    },
+    "servers": {
+        "context7": {
+            "transport": "http",
+            "url": "https://mcp.context7.com/mcp",
+            "headers": {
+                "CONTEXT7_API_KEY": "ctx7sk-REPLACE_ME"
+            },
+            "targets": [
+                "claude-code",
+                "xcode-claude",
+                "opencode",
+                "google-antigravity"
+            ]
+        },
+        "apple-docs-mcp": {
+            "transport": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@kimsungwhee/apple-docs-mcp"
+            ],
+            "env": {},
+            "targets": [
+                "claude-code",
+                "xcode-claude",
+                "opencode",
+                "google-antigravity",
+                "openai-codex",
+                "xcode-codex"
+            ]
+        },
+        "XcodeBuildMCP": {
+            "transport": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "xcodebuildmcp@latest",
+                "mcp"
+            ],
+            "env": {},
+            "targets": [
+                "claude-code",
+                "xcode-claude",
+                "opencode"
+            ]
+        },
+        "chrome-devtools": {
+            "transport": "stdio",
+            "command": "npx",
+            "args": [
+                "chrome-devtools-mcp@latest"
+            ],
+            "env": {},
+            "targets": [
+                "claude-code"
+            ]
+        },
+        "stitch": {
+            "transport": "http",
+            "url": "https://stitch.googleapis.com/mcp",
+            "headers": {
+                "X-Goog-Api-Key": "REPLACE_ME"
+            },
+            "targets": [
+                "claude-code"
+            ]
+        },
+        "pencil": {
+            "transport": "stdio",
+            "command": "/Users/leoho/.pencil/mcp/visual_studio_code/out/mcp-server-darwin-arm64",
+            "args": [
+                "--app",
+                "visual_studio_code"
+            ],
+            "env": {},
+            "targets": [
+                "claude-code",
+                "opencode",
+                "openai-codex"
+            ]
+        }
+    }
+}

@@ -40,6 +40,7 @@ show_menu() {
   echo -e "  ${CYAN}3)${NC} All Symlinks   — 全部 symlink（Configs + Skills）"
   echo -e "  ${CYAN}4)${NC} Xcode Agents   — 更新 Xcode 內建的 Claude / Codex SDK"
   echo -e "  ${CYAN}5)${NC} Flutter Skills — 安裝／更新 Flutter skills（from github.com/flutter/skills）"
+  echo -e "  ${CYAN}6)${NC} MCP Servers    — 從 mcp/servers.json 同步 MCP 設定到所有工具"
   echo -e "  ${CYAN}q)${NC} 離開"
   echo ""
 }
@@ -81,10 +82,19 @@ run_flutter_skills() {
   bash "$script"
 }
 
+run_mcp_sync() {
+  local script="${SCRIPTS_DIR}/sync-mcp-servers.sh"
+  if [[ ! -f "$script" ]]; then
+    echo -e "${RED}[ERROR]${NC} 找不到：${script}"
+    return 1
+  fi
+  bash "$script" "$@"
+}
+
 # ── 主邏輯 ──
 show_menu
 
-read -rp "請選擇操作 [1/2/3/4/5/q]: " choice
+read -rp "請選擇操作 [1/2/3/4/5/6/q]: " choice
 
 case "$choice" in
   1)
@@ -102,6 +112,9 @@ case "$choice" in
     ;;
   5)
     run_flutter_skills
+    ;;
+  6)
+    run_mcp_sync "$@"
     ;;
   q|Q)
     echo ""
