@@ -40,6 +40,7 @@ CONFIG_MAP=(
   "claude-code/.claude.json|${HOME}/.claude.json"
   "claude-code/settings.json|${HOME}/.claude/settings.json"
   "claude-code/keybindings.json|${HOME}/.claude/keybindings.json"
+  "claude-code/CLAUDE.md|${HOME}/.claude/CLAUDE.md"
 
   # OpenCode
   "opencode/opencode.json|${HOME}/.config/opencode/opencode.json"
