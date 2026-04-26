@@ -18,7 +18,9 @@
 #   bash scripts/sync-mcp-servers.sh -n          # 同上
 #   bash scripts/sync-mcp-servers.sh --dry-run --diff  # 預覽 + 彩色 diff
 #
-# 註：openai-codex / xcode-codex 不支援 http transport，遇到會 warn 並跳過。
+# 註：openai-codex / xcode-codex 不支援 http transport。
+#     若 http server 需同步到 codex，請在該 server 加上 codex-fallback 欄位，
+#     提供等價的 stdio 設定（transport/command/args/env）。沒有 fallback 者會 warn 並跳過。
 #
 
 set -euo pipefail
@@ -110,7 +112,17 @@ SCHEMA_ERR=$(jq -r '
           (if $e.value.transport == "http" and (($e.value.url // "") == "")
            then "[\($e.key)] http 必須設定 url" else empty end),
           (if (($e.value.targets // []) | length) == 0
-           then "[\($e.key)] targets 不能為空" else empty end)
+           then "[\($e.key)] targets 不能為空" else empty end),
+          # codex-fallback 驗證
+          (($e.value["codex-fallback"]) as $fb
+           | if $fb != null then
+               (if $e.value.transport != "http"
+                then "[\($e.key)] codex-fallback 僅在 transport=http 時有意義" else empty end),
+               (if (($fb.transport // "stdio") != "stdio")
+                then "[\($e.key)] codex-fallback.transport 必須為 stdio" else empty end),
+               (if (($fb.command // "") == "")
+                then "[\($e.key)] codex-fallback 必須設定 command" else empty end)
+             else empty end)
         )
     ]
   | .[]
@@ -159,17 +171,34 @@ build_section() {
     | with_entries(select((.value.targets // []) | index($tool)))
   ' "$SOURCE_FILE")
 
-  # Codex 系列：剔除 http 並警告
+  # Codex 系列：http server 若帶 codex-fallback 則改用 fallback（壓平成 stdio）；
+  # 沒 fallback 的 http server 則 warn 並跳過。
   if [[ "$format" == "codex" ]]; then
-    local http_names
-    http_names=$(echo "$filtered" | jq -r 'to_entries[] | select(.value.transport=="http") | .key')
-    if [[ -n "$http_names" ]]; then
+    local skip_names
+    skip_names=$(echo "$filtered" | jq -r '
+      to_entries[]
+      | select(.value.transport == "http" and (.value["codex-fallback"] // null) == null)
+      | .key
+    ')
+    if [[ -n "$skip_names" ]]; then
       while IFS= read -r name; do
         [[ -z "$name" ]] && continue
-        warn "${tool}: 跳過 ${name}（http transport 不支援）"
-      done <<< "$http_names"
+        warn "${tool}: 跳過 ${name}（http transport 不支援，且未設定 codex-fallback）"
+      done <<< "$skip_names"
     fi
-    filtered=$(echo "$filtered" | jq 'with_entries(select(.value.transport != "http"))')
+
+    # 套用 fallback：把帶 codex-fallback 的 http entry 替換成 fallback 的 stdio 設定，
+    # 並保留原本的 targets；其餘 http entry 過濾掉。
+    filtered=$(echo "$filtered" | jq '
+      with_entries(
+        if .value.transport == "http" and (.value["codex-fallback"] // null) != null then
+          .value = (.value["codex-fallback"] + {targets: .value.targets})
+        else
+          .
+        end
+      )
+      | with_entries(select(.value.transport != "http"))
+    ')
   fi
 
   case "$format" in

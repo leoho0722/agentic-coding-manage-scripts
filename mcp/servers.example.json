@@ -11,6 +11,7 @@
     "_notes": {
         "transport": "stdio | http",
         "http_unsupported_targets": "openai-codex 與 xcode-codex 不支援 http，會自動跳過並 warn",
+        "codex-fallback": "若 http server 想同步到 codex，可在該 server 加上 codex-fallback 物件，提供等價的 stdio 設定（transport/command/args/env），同步到 codex 時會改用此設定；無此欄位的 http server 仍會 warn 並跳過",
         "targets": "未列入 targets 的工具會從該工具設定中移除（保證 sync 後狀態 = 來源狀態）"
     },
     "servers": {
@@ -20,11 +21,24 @@
             "headers": {
                 "CONTEXT7_API_KEY": "ctx7sk-REPLACE_ME"
             },
+            "codex-fallback": {
+                "transport": "stdio",
+                "command": "npx",
+                "args": [
+                    "-y",
+                    "@upstash/context7-mcp",
+                    "--api-key",
+                    "ctx7sk-REPLACE_ME"
+                ],
+                "env": {}
+            },
             "targets": [
                 "claude-code",
                 "xcode-claude",
                 "opencode",
-                "google-antigravity"
+                "google-antigravity",
+                "openai-codex",
+                "xcode-codex"
             ]
         },
         "apple-docs-mcp": {
